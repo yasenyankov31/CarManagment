@@ -36,10 +36,6 @@ ehthumbs.db
 # Environment Variables
 *.env
 
-# Docker
-**/Dockerfile
-**/docker-compose.*
-
 # Node Modules
 node_modules/
 
