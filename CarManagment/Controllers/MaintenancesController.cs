@@ -25,7 +25,7 @@ namespace CarManagment.Controllers
             {
                 return NotFound();
             }
-            var query = _context.Maintenances.Include(x=>x.Car).Include(x => x.Garage).AsQueryable();
+            var query = _context.Maintenances.Include(x => x.Car).Include(x => x.Garage).AsQueryable();
 
             if (filter.CarId != null)
             {
@@ -50,10 +50,10 @@ namespace CarManagment.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MaintenanceDto>> GetMaintenance(long id)
         {
-          if (_context.Maintenances == null)
-          {
-              return NotFound();
-          }
+            if (_context.Maintenances == null)
+            {
+                return NotFound();
+            }
             var maintenance = await _context.Maintenances.FindAsync(id);
 
             if (maintenance == null)
@@ -179,14 +179,12 @@ namespace CarManagment.Controllers
                 })
                 .ToListAsync();
 
-            var report = monthsInRange.Select(month => new MonthlyMaintenanceReport
-            {
-                YearMonth = month.Month,
+            var report = monthsInRange.Select(date => new MonthlyMaintenanceReport { 
+                YearMonth = date.ToString("yyyy-MM"), 
                 Requests = groupedData
-                    .Where(g => g.Year == month.Year && g.Month == month.Month)
-                    .Select(g => g.Count)
-                    .FirstOrDefault()
-            }).ToList();
+                .Where(g => g.Year == date.Year && g.Month == date.Month)
+                .Select(g => g.Count).FirstOrDefault() })
+                .ToList();
 
             return Ok(report);
         }
@@ -195,7 +193,7 @@ namespace CarManagment.Controllers
             Maintenance maintenance = new()
             {
                 Id = maintenanceDto.Id,
-                Car= _context.Cars.Find(maintenanceDto.CarId),
+                Car = _context.Cars.Find(maintenanceDto.CarId),
                 ServiceType = maintenanceDto.ServiceType,
                 ScheduledDate = maintenanceDto.ScheduledDate.ToDateTime(TimeOnly.MinValue),
                 Garage = _context.Garages.Find(maintenanceDto.GarageId)
